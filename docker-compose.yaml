@@ -1,0 +1,85 @@
+services:
+  auth:
+    build: ./auth
+    ports:
+      - "5001:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://postgres:my-secret-pw@postgres:5432/auth-db"
+  games:
+    build: ./games
+    ports:
+      - "5002:8000"
+    depends_on:
+      postgres2:
+        condition: service_healthy
+  reviews:
+    build: ./reviews
+    ports:
+      - "5003:8000"
+    depends_on:
+      postgres3:
+        condition: service_healthy
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: my-secret-pw
+      POSTGRES_DB: auth-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d auth-db"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+  postgres2:
+    image: postgres:latest
+    container_name: postgres-2
+    environment:
+      POSTGRES_PASSWORD: game-pw
+      POSTGRES_DB: game-db
+    volumes:
+      - postgres2_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d game-db"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+  postgres3:
+    image: postgres:latest
+    container_name: postgres-3
+    environment:
+      POSTGRES_PASSWORD: reviews-pw
+      POSTGRES_DB: reviews-db
+    volumes:
+      - postgres3_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d reviews-db"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+  frontend:
+    build: ./frontend
+    environment:
+      AUTH_URL: "http://auth:8000"
+      GAMES_URL: "http://games:8000"
+      REVIEWS_URL: "http://reviews:8000"
+      ORDERS_URL: "http://orders:8000"
+    ports:
+      - "5000:8000"
+volumes:
+  postgres_data:
+  postgres2_data:
+  postgres3_data:

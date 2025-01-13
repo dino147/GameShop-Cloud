@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Games</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            margin: 0 auto; /* Centers the table */
+            border-collapse: collapse;
+            width: 60%; /* Adjusts table width */
+            text-align: left;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        /* Style the form container */
+        form {
+            background-color: #ffffff;
+            padding: 20px;
+            margin: 20px auto; /* Centers the form */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px; /* Adjust form width */
+        }
+
+        form h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Games</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Genre</th>
+                <th>Company</th>
+                <th>Launch Date</th>
+                <th>Price ($)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for game in games %}
+            <tr>
+                <td>{{ game.id }}</td>
+                <td>{{ game.name }}</td>
+                <td>{{ game.genre }}</td>
+                <td>{{ game.company }}</td>
+                <td>{{ game.launch_date }}</td>
+                <td>{{ "%.2f"|format(game.price) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+	
+	  <form id="addGameForm" method="POST" action="/games">
+        <h1>Add a New Game</h1>
+
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter game name" required>
+
+        <label for="genre">Genre</label>
+        <input type="text" id="genre" name="genre" placeholder="Enter game genre" required>
+
+        <label for="company">Company</label>
+        <input type="text" id="company" name="company" placeholder="Enter game company" required>
+
+        <label for="launch_date">Launch Date</label>
+        <input type="date" id="launch_date" name="launch_date" required>
+
+        <label for="price">Price</label>
+        <input type="number" id="price" name="price" placeholder="Enter game price" step="0.01" required>
+
+        <button type="submit">Add Game</button>
+    </form>
+</body>
+</html>

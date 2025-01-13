@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            text-align: center;
+        }
+
+        h1, h2 {
+            margin: 20px 0;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 400px;
+            text-align: left;
+        }
+
+        fieldset {
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        legend {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input, textarea, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            font-size: 1em;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px auto;
+            width: 80%;
+            max-width: 800px;
+            text-align: left;
+        }
+
+        li {
+            background: #fff;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-details {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .review-text {
+            font-size: 1em;
+            margin-top: 10px;
+        }
+
+        .stars {
+            color: #f5c518;
+            font-size: 1.2em;
+        }
+
+        .stars-empty {
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reviews</h1>
+
+    <h2>All Reviews</h2>
+    <ul>
+        {% for review in reviews %}
+        <li>
+            <span class="review-details">
+                <strong>Game:</strong> {{ review.game_name }} | 
+                <strong>User:</strong> {{ review.username }} | 
+                <strong>Rating:</strong>
+                <span class="stars">
+                    {% for i in range(1, 6) %}
+                        {% if i <= review.rating %}
+                        ★
+                        {% else %}
+                        <span class="stars-empty">★</span>
+                        {% endif %}
+                    {% endfor %}
+                </span>
+                | <strong>Date:</strong> {{ review.submit_date }}
+            </span>
+            <p class="review-text">{{ review.review }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <form method="POST" action="/reviews">
+        <fieldset>
+            <legend>Submit a New Review</legend>
+            <label for="game_id">Game ID:</label>
+            <input type="text" id="game_id" name="game_id" placeholder="Enter the game ID" required>
+
+            <label for="review">Review:</label>
+            <textarea id="review" name="review" placeholder="Write your review here..." required></textarea>
+
+            <label for="rating">Rating:</label>
+            <select id="rating" name="rating" required>
+                <option value="" disabled selected>Select a rating</option>
+                <option value="1">1 - Poor</option>
+                <option value="2">2 - Fair</option>
+                <option value="3">3 - Good</option>
+                <option value="4">4 - Very Good</option>
+                <option value="5">5 - Excellent</option>
+            </select>
+
+            <button type="submit">Add Review</button>
+        </fieldset>
+    </form>
+</body>
+</html>
