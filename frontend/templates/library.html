@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            text-align: center;
+        }
+
+        h1, h2 {
+            margin: 20px 0;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 400px;
+            text-align: left;
+        }
+
+        fieldset {
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        legend {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            font-size: 1em;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Library</h1>
+
+    <h2>My Games</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Game</th>
+                <th>Username</th>
+                <th>Purchase Date</th>
+                <th>Downloaded</th>
+                <th>DLC</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for game in library_games %}
+            <tr>
+                <td>{{ game.game_name }}</td>
+                <td>{{ game.username }}</td>
+                <td>{{ game.purchase_date }}</td>
+                <td>{{ "Yes" if game.downloaded else "No" }}</td>
+                <td>{{ "Yes" if game.dlc else "No" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <form method="POST" action="/library">
+        <fieldset>
+            <legend>Add a Game to Library</legend>
+            <label for="game_id">Game ID:</label>
+            <input type="text" id="game_id" name="game_id" placeholder="Enter the game ID" required>
+
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+
+            <label for="downloaded">Downloaded:</label>
+            <select id="downloaded" name="downloaded" required>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+
+            <label for="dlc">DLC Purchased:</label>
+            <select id="dlc" name="dlc" required>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+
+            <button type="submit">Add to Library</button>
+        </fieldset>
+    </form>
+</body>
+</html>

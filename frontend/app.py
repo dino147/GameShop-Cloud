@@ -9,6 +9,7 @@ SECRET_KEY = "Aidwj3iijsjFew12esjdiaPRasecret"
 auth_url = os.getenv("AUTH_URL", default="http://localhost:5001")
 games_url = os.getenv("GAMES_URL", default="http://localhost:5002")
 reviews_url = os.getenv("REVIEWS_URL", default="http://localhost:5003")
+library_url = os.getenv("LIBRARY_URL", default="http://localhost:5004")
 
 app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
@@ -96,6 +97,44 @@ def manage_reviews():
             review["game_name"] = "Unknown Game"
     
     return render_template("reviews.html", reviews=reviews)
+    
+    
+@app.route("/library", methods=["GET", "POST"])
+@login_required
+def manage_library():
+    if request.method == "POST":
+        app.logger.debug("Frontend Library add request: %s", request.form)
+       
+        game_id = request.form["game_id"]
+        username = jwt.decode(request.cookies.get("token"), SECRET_KEY, algorithms="HS256")["username"]
+        downloaded = request.form["downloaded"].lower() == "true"
+        dlc = request.form["dlc"].lower() == "true"
+        
+        requests.post(f"{library_url}/library", json={
+            "game_id": game_id,
+            "username": username,
+            "downloaded": downloaded,
+            "dlc": dlc
+        })
+        return redirect(url_for("manage_library"))
+    
+    user = jwt.decode(request.cookies.get("token"), SECRET_KEY, algorithms="HS256")["username"]
+    response = requests.get(f"{library_url}/library", params={"user": user})
+    library_games = response.json()
+    
+    for lib_game in library_games:
+        game_id = lib_game["game_id"]
+        game_response = requests.get(f"{games_url}/game/{game_id}") 
+        if game_response.status_code == 200:
+            game_data = game_response.json()
+            app.logger.debug("Frontend get game with id: " + str(game_id) + " response " + str(game_data))
+            lib_game["game_name"] = game_data.get("name", "Unknown Game")
+        else:
+            app.logger.error("Failed to fetch game with id: " + str(game_id) + " status code: " + str(game_response.status_code))
+            lib_game["game_name"] = "Unknown Game"
+
+    return render_template("library.html", library_games=library_games)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

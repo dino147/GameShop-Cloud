@@ -22,6 +22,13 @@ services:
     depends_on:
       postgres3:
         condition: service_healthy
+  library:
+    build: ./library
+    ports:
+      - "5004:8000"
+    depends_on:
+      postgres3:
+        condition: service_healthy
   postgres:
     image: postgres
     environment:
@@ -70,16 +77,34 @@ services:
       retries: 5
       start_period: 10s
       timeout: 5s
+      
+  postgres4:
+    image: postgres:latest
+    container_name: postgres-4
+    environment:
+      POSTGRES_PASSWORD: library-pw
+      POSTGRES_DB: library-db
+    volumes:
+      - postgres4_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d library-db"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
   frontend:
     build: ./frontend
     environment:
       AUTH_URL: "http://auth:8000"
       GAMES_URL: "http://games:8000"
       REVIEWS_URL: "http://reviews:8000"
-      ORDERS_URL: "http://orders:8000"
+      LIBRARY_URL: "http://library:8000"
     ports:
       - "5000:8000"
 volumes:
   postgres_data:
   postgres2_data:
   postgres3_data:
+  postgres4_data:
