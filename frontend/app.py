@@ -53,6 +53,24 @@ def login_page():
         return "Invalid credentials", 401
 
     return render_template("login.html")
+    
+@app.route("/register", methods=["GET", "POST"])
+def register_page():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        first_name = request.form["first_name"]
+        last_name = request.form["last_name"]
+        response = requests.post(f"{auth_url}/register", json={"username": username, "password": password, "first_name": first_name, "last_name":last_name})
+        if response.status_code == 200:
+            token = response.json()["token"]
+            resp = redirect(url_for("home"))
+            resp.set_cookie("token", token)
+            return resp
+
+        return "Username and password required", 401
+
+    return render_template("register.html")
 
 @app.route("/games", methods=["GET", "POST"])
 @login_required

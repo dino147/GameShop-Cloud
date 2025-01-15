@@ -1,14 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Game Shop</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameShop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            text-align: center;
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        nav {
+            background-color: #0056b3;
+            padding: 10px 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            padding: 40px 20px;
+        }
+
+        main h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .cta {
+            margin: 20px auto;
+            padding: 15px 25px;
+            background-color: #28a745;
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta:hover {
+            background-color: #218838;
+        }
+
+        footer {
+            background-color: #f4f4f9;
+            padding: 10px 0;
+            font-size: 0.9em;
+            color: #555;
+            border-top: 1px solid #ddd;
+        }
+
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the GameShop</h1>
+    <header>
+        <h1>Welcome to GameShop</h1>
+    </header>
     <nav>
-        <a href="/games">View Games</a> | 
-        <a href="/reviews">Manage Reviews</a> | 
+        <a href="/games">View Games</a>
+        <a href="/reviews">Manage Reviews</a>
         <a href="/library">Manage Library</a>
     </nav>
+    <main>
+        <h2>Your One-Stop Shop for Games!</h2>
+        <p>Explore the latest games, manage your library, and share reviews with our community. Click on the links above to get started!</p>
+        <a href="/games" class="cta">Browse Games</a>
+    </main>
 </body>
 </html>

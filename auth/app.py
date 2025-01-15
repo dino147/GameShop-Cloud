@@ -27,22 +27,27 @@ class User(Base):
     pwd_hash=Column('password', String(64))
     first_name=Column('first_name', String(32))
     last_name=Column('last_name', String(32))
-# 2 - generate database schema
+    
+    def __init__(self, username, pwd_hash, first_name, last_name):
+        self.username = username
+        self.pwd_hash = pwd_hash
+        self.first_name = first_name
+        self.last_name = last_name
+        
+# Generate database schema
 Base.metadata.create_all(engine)
 
 SECRET_KEY = "Aidwj3iijsjFew12esjdiaPRasecret"
 
 app.logger.debug("User admin" + session.query(User).filter(User.username == "admin").first().pwd_hash)
-# Query the user to be deleted
-user_to_delete = session.query(User).filter(User.username == 'admin').first()
+# user_to_delete = session.query(User).filter(User.username == 'admin').first()
 
-# Check if the user exists and delete
-if user_to_delete:
-    session.delete(user_to_delete)
-    session.commit()
-    print("User deleted")
-else:
-    print("User not found")
+# if user_to_delete:
+    # session.delete(user_to_delete)
+    # session.commit()
+    # print("User deleted")
+# else:
+    # print("User not found")
 
 if session.query(User).filter(User.username == "admin").first() is None:
     u = User()
@@ -73,6 +78,31 @@ def login():
         return jsonify({"token": token})
     else:
         return jsonify({"error": "Invalid credentials"}), 401
+        
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.json
+    username = data.get("username")
+    password = data.get("password")
+    first_name = data.get("first_name")
+    last_name = data.get("last_name")
+
+    if not username or not password:
+        return jsonify({"error": "Username and password are required"}), 400
+
+    user = session.query(User).filter(User.username == username).first()
+    
+    if user:
+        return jsonify({"error": "Username already taken"}), 401
+        
+    pwd_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+    new_user = User(username, pwd_hash, first_name, last_name)
+    token = jwt.encode({"username": username, "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)}, SECRET_KEY, algorithm="HS256")
+    
+    session.add(new_user)
+    session.commit()
+    
+    return jsonify({"token": token})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)

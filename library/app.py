@@ -55,6 +55,7 @@ def get_orders():
 def add_order():
     app.logger.debug("Library Game add request")
     data = request.json
+    user = request.args.get("user")
     lib_game = LibraryGame(int(data["game_id"]), data["username"], datetime.now(), data["downloaded"], data["dlc"])
     session.add(lib_game)
     session.commit()
