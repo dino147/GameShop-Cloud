@@ -1,34 +1,30 @@
 services:
   auth:
-    build: ./auth
+    image: dino147/auth:latest
     ports:
       - "5001:8000"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     environment:
       DATABASE_URL: "postgresql://postgres:my-secret-pw@postgres:5432/auth-db"
   games:
-    build: ./games
+    image: dino147/games:latest
     ports:
       - "5002:8000"
     depends_on:
-      postgres2:
-        condition: service_healthy
+      - postgres2
   reviews:
-    build: ./reviews
+    image: dino147/reviews:latest
     ports:
       - "5003:8000"
     depends_on:
-      postgres3:
-        condition: service_healthy
+      - postgres3
   library:
-    build: ./library
+    image: dino147/library:latest
     ports:
       - "5004:8000"
     depends_on:
-      postgres3:
-        condition: service_healthy
+      - postgres4
   postgres:
     image: postgres
     environment:
@@ -95,7 +91,7 @@ services:
       start_period: 10s
       timeout: 5s
   frontend:
-    build: ./frontend
+    image: dino147/frontend:latest
     environment:
       AUTH_URL: "http://auth:8000"
       GAMES_URL: "http://games:8000"

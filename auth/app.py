@@ -6,6 +6,26 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 import hashlib
 import bcrypt
 import logging
+import time
+import psycopg2
+
+def wait_for_db():
+    while True:
+        try:
+            conn = psycopg2.connect(
+                host="postgres",
+                database="auth-db",
+                user="postgres",
+                password="my-secret-pw"
+            )
+            conn.close()
+            break
+        except Exception as e:
+            print("Database not ready, retrying in 5 seconds...")
+            time.sleep(5)
+
+wait_for_db()
+
 
 app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
@@ -39,7 +59,7 @@ Base.metadata.create_all(engine)
 
 SECRET_KEY = "Aidwj3iijsjFew12esjdiaPRasecret"
 
-app.logger.debug("User admin" + session.query(User).filter(User.username == "admin").first().pwd_hash)
+#app.logger.debug("User admin" + session.query(User).filter(User.username == "admin").first().pwd_hash)
 # user_to_delete = session.query(User).filter(User.username == 'admin').first()
 
 # if user_to_delete:
@@ -50,11 +70,7 @@ app.logger.debug("User admin" + session.query(User).filter(User.username == "adm
     # print("User not found")
 
 if session.query(User).filter(User.username == "admin").first() is None:
-    u = User()
-    u.username = "admin"
-    u.pwd_hash = bcrypt.hashpw("pass".encode(), bcrypt.gensalt()).decode()
-    u.first_name = "John"
-    u.last_name = "Keller"
+    u = User("admin", bcrypt.hashpw("pass".encode(), bcrypt.gensalt()).decode(), "John", "Keller")
     app.logger.debug("Hash parola creata:" + u.pwd_hash)
 
     session.add(u)

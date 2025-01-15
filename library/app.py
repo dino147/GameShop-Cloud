@@ -3,6 +3,25 @@ from sqlalchemy import create_engine, Column, Integer, Numeric, String, Float, B
 from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime
 import logging
+import time
+import psycopg2
+
+def wait_for_db():
+    while True:
+        try:
+            conn = psycopg2.connect(
+                host="postgres4",
+                database="library-db",
+                user="postgres",
+                password="library-pw"
+            )
+            conn.close()
+            break
+        except Exception as e:
+            print("Database not ready, retrying in 5 seconds...")
+            time.sleep(5)
+
+wait_for_db()
 
 app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
